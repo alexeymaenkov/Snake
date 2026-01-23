@@ -22,13 +22,35 @@ namespace Snake
             Console.OutputEncoding = Encoding.Unicode;
 
             Console.Title = "SNAKE PLISSKEN";
+            
+            int Xmap = 70;
+            int Ymap = Xmap/2;
+            
+            int targetW = Xmap + 45;
+            int targetH = Ymap + 15;
 
+            TrySetConsole(targetW, targetH);
+
+            static void TrySetConsole(int w, int h)
+            {
+                try
+                {
+                    w = Math.Min(w, Console.LargestWindowWidth);
+                    h = Math.Min(h, Console.LargestWindowHeight);
+
+                    Console.SetBufferSize(w, h);
+                    Console.SetWindowSize(w, h);
+                }
+                catch {}
+            }
+
+            /*
             int Xmap = 70;
             int Ymap = Xmap/2;
 
             Console.WindowHeight = Ymap + 15;
             Console.WindowWidth = Xmap + 45;
-
+            */
             Console.ForegroundColor = ConsoleColor.Red;
             char[,] logo = ReadLogo("logo.txt");
             DrawLogo(logo);
