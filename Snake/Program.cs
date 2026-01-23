@@ -21,7 +21,9 @@ namespace Snake
             Console.InputEncoding = Encoding.Unicode;
             Console.OutputEncoding = Encoding.Unicode;
 
-            Console.Title = "SNAKE PLISSKEN";
+            //Console.Title = "SNAKE PLISSKEN";
+            
+            Console.Title = "SNAKE";
             
             int Xmap = 70;
             int Ymap = Xmap/2;
