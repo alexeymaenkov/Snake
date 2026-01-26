@@ -114,6 +114,8 @@ namespace Snake
                     {
                         Console.BackgroundColor = ConsoleColor.Yellow;
                         Console.ForegroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(85, 33);
+                        Console.Write(" >>>SPACE<<<");
                         Console.SetCursorPosition(85, 34);
                         Console.Write(" ----------- ");
                         Console.SetCursorPosition(85, 35);
@@ -149,14 +151,14 @@ namespace Snake
 
                     CheckSpecialObjectsCollision(head, snakeList, ref snakePreyX, ref snakePreyY, ref snakeEnemyX, ref snakeEnemyY, ref gameOver, ref levelUp, ref score, ref startPosition, ref preyLife, ref enemyLife, ref speed, ref preyRip, ref enemyRip);
 
-                    if (enemyLife == true && level > 2)
+                    if (enemyLife == true/* && level > 2*/)
                     {
                         enemyRip = false;
                         bool colorFrame = false;
                         DrawEnemy(random, ref snakeList, ref foodList, map, ref snakeEnemyX, ref snakeEnemyY, ref score, ref enemyLife, ref Xmap, ref Ymap, ref colorFrame, ref directionEnemyX, ref directionEnemyY);
                     }
 
-                    if (preyLife == true && level > 1)
+                    if (preyLife == true/* && level > 1*/)
                     {
                         preyRip = false;
                         DrawPrey(random, ref snakeList, map, ref snakePreyX, ref snakePreyY, ref score, ref preyLife);
