@@ -138,6 +138,8 @@ namespace Snake
                     {
                         Console.BackgroundColor = ConsoleColor.Yellow;
                         Console.ForegroundColor = ConsoleColor.Black;
+                        Console.SetCursorPosition(85, 33);
+                        Console.Write(" >>>SPACE<<< ");
                         Console.SetCursorPosition(85, 34);
                         Console.Write(" ----------- ");
                         Console.SetCursorPosition(85, 35);
