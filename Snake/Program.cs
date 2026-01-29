@@ -15,7 +15,7 @@ namespace Snake
 {
     internal class Program
     {
-        static int[] currentDirection = { 0, 0 };
+        static int[] _currentDirection = { 0, 0 };
         static void Main(string[] args)
         {
             Console.InputEncoding = Encoding.Unicode;
@@ -25,11 +25,11 @@ namespace Snake
             
             Console.Title = "SNAKE";
             
-            int Xmap = 70;
-            int Ymap = Xmap/2;
+            int xmap = 70;
+            int ymap = xmap/2;
             
-            int targetW = Xmap + 45;
-            int targetH = Ymap + 15;
+            int targetW = xmap + 45;
+            int targetH = ymap + 15;
 
             TrySetConsole(targetW, targetH);
 
@@ -75,8 +75,8 @@ namespace Snake
             string rerun = "y";
 
 
-            int snakeStartX = Xmap / 2;
-            int snakeStartY = Ymap / 2;
+            int snakeStartX = xmap / 2;
+            int snakeStartY = ymap / 2;
 
             (int X, int Y) startPosition = (snakeStartX, snakeStartY);
 
@@ -87,11 +87,11 @@ namespace Snake
 
             while (rerun == "y")
             {
-                int snakePreyX = random.Next(1, Xmap - 1);
-                int snakePreyY = random.Next(1, Ymap - 1);
+                int snakePreyX = random.Next(1, xmap - 1);
+                int snakePreyY = random.Next(1, ymap - 1);
 
-                int snakeEnemyX = random.Next(6, Xmap - 6);
-                int snakeEnemyY = random.Next(6, Ymap - 6);
+                int snakeEnemyX = random.Next(6, xmap - 6);
+                int snakeEnemyY = random.Next(6, ymap - 6);
 
                 int directionEnemyX = 1;
                 int directionEnemyY = 1;
@@ -108,11 +108,11 @@ namespace Snake
 
                 List<(int X, int Y)> foodList = new List<(int, int)> { };
 
-                char[,] map = GetMap(Xmap, Ymap, foodNumbers);
+                char[,] map = GetMap(xmap, ymap);
                 DrawMap(map);
-                GetFoodList(Xmap, Ymap, ref foodList, foodNumbers, random);
+                GetFoodList(xmap, ymap, ref foodList, foodNumbers, random);
 
-                LeaderboardJson.ShowTopInGame(Xmap, 10);
+                LeaderboardJson.ShowTopInGame(xmap);
 
                 bool preyRip = true;
                 bool enemyRip = true;
@@ -134,7 +134,7 @@ namespace Snake
                         }
                     }
                     
-                    if (isPaused == true)
+                    if (isPaused)
                     {
                         Console.BackgroundColor = ConsoleColor.Yellow;
                         Console.ForegroundColor = ConsoleColor.Black;
@@ -167,25 +167,25 @@ namespace Snake
                         Console.Write('*');
                     }
 
-                    DrawInfo(ref Xmap, ref Ymap, ref level, ref speed, ref score);
+                    DrawInfo(ref xmap, ref ymap, ref level, ref speed, ref score);
 
-                    HandleInput(pressedKey, snakeList, ref foodList, map, ref gameOver, ref levelUp, ref score, ref startPosition, ref speed, ref Xmap, ref Ymap);
+                    HandleInput(pressedKey, snakeList, ref foodList, map, ref gameOver, ref levelUp, ref score, ref startPosition);
                     
                     var head = snakeList[0];
 
                     CheckSpecialObjectsCollision(head, snakeList, ref snakePreyX, ref snakePreyY, ref snakeEnemyX, ref snakeEnemyY, ref gameOver, ref levelUp, ref score, ref startPosition, ref preyLife, ref enemyLife, ref speed, ref preyRip, ref enemyRip);
 
-                    if (enemyLife == true/* && level > 2*/)
+                    if (enemyLife/* && level > 2*/)
                     {
                         enemyRip = false;
                         bool colorFrame = false;
-                        DrawEnemy(random, ref snakeList, ref foodList, map, ref snakeEnemyX, ref snakeEnemyY, ref score, ref enemyLife, ref Xmap, ref Ymap, ref colorFrame, ref directionEnemyX, ref directionEnemyY);
+                        DrawEnemy(ref snakeList, ref foodList, map, ref snakeEnemyX, ref snakeEnemyY, ref score, ref xmap, ref ymap, ref colorFrame, ref directionEnemyX, ref directionEnemyY);
                     }
 
-                    if (preyLife == true/* && level > 1*/)
+                    if (preyLife/* && level > 1*/)
                     {
                         preyRip = false;
-                        DrawPrey(random, ref snakeList, map, ref snakePreyX, ref snakePreyY, ref score, ref preyLife);
+                        DrawPrey(random, ref snakeList, map, ref snakePreyX, ref snakePreyY);
                         Console.ForegroundColor = ConsoleColor.Magenta;
                         Console.SetCursorPosition(snakePreyX, snakePreyY);
                         Console.Write("S");
@@ -219,7 +219,7 @@ namespace Snake
                         preyRip = false;
                         rerun = "y";
                         foodList.Clear();
-                        GetFoodList(Xmap, Ymap, ref foodList, foodNumbers, random);
+                        GetFoodList(xmap, ymap, ref foodList, foodNumbers, random);
                     }
                 }
                 if (levelUp == false)
@@ -284,18 +284,18 @@ namespace Snake
         }
         //===================================================MAP=============================================================
 
-        private static char[,] GetMap(int X, int Y, int foodNumbers)
+        private static char[,] GetMap(int x, int y)
         {
             char border = '#';
             char field = ' ';
 
-            char[,] map = new char[X, Y];
+            char[,] map = new char[x, y];
 
             for (int i = 0; i < map.GetLength(0); i++)
             {
                 for (int j = 0; j < map.GetLength(1); j++)
                 {
-                    if ((i == 0) || (j == 0) || (i == X - 1) || (j == Y - 1))
+                    if ((i == 0) || (j == 0) || (i == x - 1) || (j == y - 1))
                     {
                         map[i, j] = border;
                     }
@@ -306,11 +306,11 @@ namespace Snake
         }
         //==============================================FOODLIST================================================================
 
-        private static void GetFoodList(int Xmap, int Ymap, ref List<(int X, int Y)> foodList, int foodNumbers, Random random)
+        private static void GetFoodList(int xmap, int ymap, ref List<(int X, int Y)> foodList, int foodNumbers, Random random)
         {
             for (int i = 0; i < foodNumbers; i++)
             {
-                (int X, int Y) newFood = (random.Next(2, Xmap - 2), random.Next(2, Ymap - 2));
+                (int X, int Y) newFood = (random.Next(2, xmap - 2), random.Next(2, ymap - 2));
                 foodList.Insert(i, newFood);
             }
         }
@@ -329,28 +329,28 @@ namespace Snake
 
         private static int[] GetDirection(ConsoleKeyInfo pressedKey)
         {
-            int[] newDirection = { currentDirection[0], currentDirection[1] };
+            int[] newDirection = { _currentDirection[0], _currentDirection[1] };
 
             if (pressedKey.Key == ConsoleKey.UpArrow)
-                newDirection = new int[] { 0, -1 };
+                newDirection = new [] { 0, -1 };
             else if (pressedKey.Key == ConsoleKey.DownArrow)
-                newDirection = new int[] { 0, 1 };
+                newDirection = new [] { 0, 1 };
             else if (pressedKey.Key == ConsoleKey.LeftArrow)
-                newDirection = new int[] { -1, 0 };
+                newDirection = new [] { -1, 0 };
             else if (pressedKey.Key == ConsoleKey.RightArrow)
-                newDirection = new int[] { 1, 0 };
+                newDirection = new [] { 1, 0 };
 
-            if (!(newDirection[0] == -currentDirection[0] && newDirection[1] == -currentDirection[1]))
+            if (!(newDirection[0] == -_currentDirection[0] && newDirection[1] == -_currentDirection[1]))
             {
-                currentDirection = newDirection;
+                _currentDirection = newDirection;
             }
-            return currentDirection;
+            return _currentDirection;
         }
         //===============================================DRAW INFO=============================================================
 
-        private static void DrawInfo(ref int Xmap, ref int Ymap, ref int level, ref int speed, ref int score)
+        private static void DrawInfo(ref int xmap, ref int y, ref int level, ref int speed, ref int score)
         {
-            Console.SetCursorPosition(Xmap + 2, 15);
+            Console.SetCursorPosition(xmap + 2, 15);
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Red;
             Console.WriteLine($"=========== C O N T R O L S ===========");
@@ -415,14 +415,14 @@ namespace Snake
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.DarkRed;
-            Console.SetCursorPosition((Xmap / 2) - 20, Ymap + 1);
+            Console.SetCursorPosition((xmap / 2) - 20, y + 1);
             Console.Write($" Level: {level}  ||  Speed: {speed}  ||  Score: {score} ");
             Console.ResetColor();
-            Console.SetCursorPosition((Xmap / 2) - 20, Ymap + 3);
+            Console.SetCursorPosition((xmap / 2) - 20, y + 3);
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.Write($"S = SPEED UP  &  SCORE х 2");
             Console.ResetColor();
-            Console.SetCursorPosition((Xmap / 2) - 20, Ymap + 5);
+            Console.SetCursorPosition((xmap / 2) - 20, y + 5);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.Write($"D");
             Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -432,7 +432,7 @@ namespace Snake
             Console.ResetColor();
         }
         //=================================================HANDLE INPUT===========================================================
-        private static void HandleInput(ConsoleKeyInfo pressedKey, List<(int X, int Y)> snakeList, ref List<(int X, int Y)> foodList, char[,] map, ref bool gameOver, ref bool levelUp, ref int score, ref (int X, int Y) startPosition, ref int speed, ref int Xmap, ref int Ymap)
+        private static void HandleInput(ConsoleKeyInfo pressedKey, List<(int X, int Y)> snakeList, ref List<(int X, int Y)> foodList, char[,] map, ref bool gameOver, ref bool levelUp, ref int score, ref (int X, int Y) startPosition)
         {
 
             int[] direction = GetDirection(pressedKey);
@@ -510,7 +510,7 @@ namespace Snake
 
         //===================================================PREY=========================================================
 
-        private static void DrawPrey(Random random, ref List<(int X, int Y)> snakeList, char[,] map, ref int snakePreyX, ref int snakePreyY, ref int score, ref bool enemyLife)
+        private static void DrawPrey(Random random, ref List<(int X, int Y)> snakeList, char[,] map, ref int snakePreyX, ref int snakePreyY)
         {
             int directionPreyX = random.Next(-1, 2);
             int directionPreyY = random.Next(-1, 2);
@@ -540,7 +540,7 @@ namespace Snake
         }
         //==================================================ENEMY==========================================================
 
-        private static void DrawEnemy(Random random, ref List<(int X, int Y)> snakeList, ref List<(int X, int Y)> foodList, char[,] map, ref int snakeEnemyX, ref int snakeEnemyY, ref int score, ref bool enemyLife, ref int Xmap, ref int Ymap, ref bool colorFrame, ref int directionEnemyX, ref int directionEnemyY)
+        private static void DrawEnemy(ref List<(int X, int Y)> snakeList, ref List<(int X, int Y)> foodList, char[,] map, ref int snakeEnemyX, ref int snakeEnemyY, ref int score, ref int xmap, ref int ymap, ref bool colorFrame, ref int directionEnemyX, ref int directionEnemyY)
         {
             int nextEnemyPositionX;
             int nextEnemyPositionY;
@@ -565,34 +565,34 @@ namespace Snake
                     nextEnemyPositionX = snakeEnemyX + directionEnemyX;
                     nextEnemyPositionY = snakeEnemyY + directionEnemyY;
                 }
-                else if (snakeEnemyX == Xmap - 7 && snakeEnemyY == Ymap - 7)
+                else if (snakeEnemyX == xmap - 7 && snakeEnemyY == ymap - 7)
                 {
                     directionEnemyX = -1;
                     directionEnemyY = -1;
                     nextEnemyPositionX = snakeEnemyX + directionEnemyX;
                     nextEnemyPositionY = snakeEnemyY + directionEnemyY;
                 }
-                else if (snakeEnemyX == 6 && snakeEnemyY == Ymap - 7)
+                else if (snakeEnemyX == 6 && snakeEnemyY == ymap - 7)
                 {
                     directionEnemyX = 1;
                     directionEnemyY = -1;
                     nextEnemyPositionX = snakeEnemyX + directionEnemyX;
                     nextEnemyPositionY = snakeEnemyY + directionEnemyY;
                 }
-                else if (snakeEnemyX == Xmap - 7 && snakeEnemyY == 6)
+                else if (snakeEnemyX == xmap - 7 && snakeEnemyY == 6)
                 {
                     directionEnemyX = -1;
                     directionEnemyY = 1;
                     nextEnemyPositionX = snakeEnemyX + directionEnemyX;
                     nextEnemyPositionY = snakeEnemyY + directionEnemyY;
                 }
-                else if (snakeEnemyX == 6 || snakeEnemyX == Xmap - 7)
+                else if (snakeEnemyX == 6 || snakeEnemyX == xmap - 7)
                 {
                     directionEnemyX = directionEnemyX * -1;
                     nextEnemyPositionX = snakeEnemyX + directionEnemyX;
                     nextEnemyPositionY = snakeEnemyY + directionEnemyY;
                 }
-                else if (snakeEnemyY == 6 || snakeEnemyY == Ymap - 7)
+                else if (snakeEnemyY == 6 || snakeEnemyY == ymap - 7)
                 {
                     directionEnemyY = directionEnemyY * -1;
                     nextEnemyPositionX = snakeEnemyX + directionEnemyX;
@@ -630,10 +630,10 @@ namespace Snake
             }
 
             if (nextXYEnemyCell == snakeList[0])
-                {
-                    enemyOnSnake = true;
-                }
-            if (nextEnemyCell == ' ' && enemyOnSnake == false && nextEnemyPositionX > 5 && nextEnemyPositionX < (Xmap - 6) && nextEnemyPositionY > 5 && nextEnemyPositionY < (Ymap - 6))
+            {
+                enemyOnSnake = true;
+            }
+            if (nextEnemyCell == ' ' && enemyOnSnake == false && nextEnemyPositionX > 5 && nextEnemyPositionX < (xmap - 6) && nextEnemyPositionY > 5 && nextEnemyPositionY < (ymap - 6))
             {
                 Console.SetCursorPosition(snakeEnemyX, snakeEnemyY);
                 Console.Write(' ');
@@ -686,7 +686,7 @@ namespace Snake
                 snakeEnemyX = nextEnemyPositionX;
                 snakeEnemyY = nextEnemyPositionY;
             }
-            if (colorFrame == true)
+            if (colorFrame)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.SetCursorPosition(snakeEnemyX, snakeEnemyY);
@@ -807,23 +807,23 @@ namespace Snake
                     rank++;
                 }
             }
-            public static void ShowTopInGame(int Xmap, int topN = 10)
+            public static void ShowTopInGame(int xmap, int topN = 10)
             {
                 var top = LoadAll().Take(topN).ToList();
-                Console.SetCursorPosition(Xmap + 2, 2);
+                Console.SetCursorPosition(xmap + 2, 2);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
                 Console.WriteLine($"============ TOP-{topN} PLAYERS ===========");
                 Console.ResetColor();
 
-                int Xtop5 = 4;
+                int xtop5 = 4;
                 int rank = 1;
                 foreach (var s in top)
                 {
-                    Console.SetCursorPosition(Xmap + 2, Xtop5);
+                    Console.SetCursorPosition(xmap + 2, xtop5);
                     Console.WriteLine($"{rank,2}. {s.Name,-10}  Score: {s.Score,-5}  Level: {s.Level,1}");
                     rank++;
-                    Xtop5++;
+                    xtop5++;
                 }
             }
         }
