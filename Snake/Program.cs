@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Sources;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Snake
 {
@@ -20,11 +10,10 @@ namespace Snake
         {
             Console.InputEncoding = Encoding.Unicode;
             Console.OutputEncoding = Encoding.Unicode;
-
-            //Console.Title = "SNAKE PLISSKEN";
-            
+           
             Console.Title = "SNAKE";
             
+            /*
             int xmap = 70;
             int ymap = xmap/2;
             
@@ -45,14 +34,14 @@ namespace Snake
                 }
                 catch {}
             }
-
-            /*
-            int Xmap = 70;
-            int Ymap = Xmap/2;
-
-            Console.WindowHeight = Ymap + 15;
-            Console.WindowWidth = Xmap + 45;
             */
+            
+            int xmap = 70;
+            int ymap = xmap/2;
+
+            Console.WindowHeight = ymap + 15;
+            Console.WindowWidth = xmap + 45;
+            
             Console.ForegroundColor = ConsoleColor.Red;
             char[,] logo = ReadLogo("logo.txt");
             DrawLogo(logo);
@@ -139,11 +128,11 @@ namespace Snake
                         Console.BackgroundColor = ConsoleColor.Yellow;
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.SetCursorPosition(85, 33);
-                        Console.Write(" >>>SPACE<<<");
+                        Console.Write(" >>>PAUSE<<< ");
                         Console.SetCursorPosition(85, 34);
                         Console.Write(" ----------- ");
                         Console.SetCursorPosition(85, 35);
-                        Console.Write("| P A U S E |");
+                        Console.Write("| S P A S E |");
                         Console.SetCursorPosition(85, 36);
                         Console.Write(" ----------- ");
                         Console.ResetColor();
@@ -151,6 +140,8 @@ namespace Snake
                         isPaused = !isPaused;
                         Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.SetCursorPosition(85, 33);
+                        Console.Write(" >>>PAUSE<<< ");
                         Console.SetCursorPosition(85, 34);
                         Console.Write(" ----------- ");
                         Console.SetCursorPosition(85, 35);
