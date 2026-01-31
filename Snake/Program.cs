@@ -13,29 +13,6 @@ namespace Snake
            
             Console.Title = "SNAKE";
             
-            /*
-            int xmap = 70;
-            int ymap = xmap/2;
-            
-            int targetW = xmap + 45;
-            int targetH = ymap + 15;
-
-            TrySetConsole(targetW, targetH);
-
-            static void TrySetConsole(int w, int h)
-            {
-                try
-                {
-                    w = Math.Min(w, Console.LargestWindowWidth);
-                    h = Math.Min(h, Console.LargestWindowHeight);
-
-                    Console.SetBufferSize(w, h);
-                    Console.SetWindowSize(w, h);
-                }
-                catch {}
-            }
-            */
-            
             int xmap = 70;
             int ymap = xmap/2;
 
