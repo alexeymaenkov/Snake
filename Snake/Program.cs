@@ -49,7 +49,7 @@ namespace Snake
             
             Console.Write("\n\n                                     ->   ENTER YOUR NAME: ");
             Console.ForegroundColor = ConsoleColor.White;
-            Player player = new Player(Console.ReadLine());
+            var player = new Player(Console.ReadLine());
             Console.ResetColor();
             Console.Clear();
 
@@ -145,7 +145,7 @@ namespace Snake
                         Console.SetCursorPosition(85, 34);
                         Console.Write(" ----------- ");
                         Console.SetCursorPosition(85, 35);
-                        Console.Write("| P A U S E |");
+                        Console.Write("| S P A S E |");
                         Console.SetCursorPosition(85, 36);
                         Console.Write(" ----------- ");
                         Console.ResetColor();
@@ -746,17 +746,18 @@ namespace Snake
 
         class Player
         {
-            public string Name;
-            public Player(string name)
+            public string Name { get; }
+
+            public Player(string? name)
             {
-            Name = name;
+            Name = string.IsNullOrWhiteSpace(name) ? "Player" : name.Trim();
             }
         }
         //===================================================================================================================
 
         public class ScoreEntry
         {
-            public string Name { get; set; }
+            public string Name { get; set; } = "Player";
             public int Score { get; set; }
             public int Level { get; set; }
         }
@@ -766,11 +767,14 @@ namespace Snake
         {
             private static readonly string FilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "leaderboard.json");
             private static readonly JsonSerializerOptions JsonOpts = new JsonSerializerOptions { WriteIndented = true };
-
+            
+            private static string NormalizeName(string? name)
+                => string.IsNullOrWhiteSpace(name) ? "Player" : name.Trim();
+            
             public static void SaveScore(string name, int score, int level)
             {
                 var all = LoadAll();
-                all.Add(new ScoreEntry { Name = name, Score = score, Level = level });
+                all.Add(new ScoreEntry { Name = NormalizeName(name), Score = score, Level = level });
                 var sorted = all.OrderByDescending(s => s.Score).ThenBy(s => s.Level).ToList();
                 File.WriteAllText(FilePath, JsonSerializer.Serialize(sorted, JsonOpts));
             }
